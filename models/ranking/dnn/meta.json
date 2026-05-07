@@ -1,0 +1,30 @@
+{
+  "version": "20260504043416",
+  "created_at": "2026-05-04T04:34:16.558164",
+  "input_dim": 10,
+  "feature_names": [
+    "recall_score",
+    "popularity_norm",
+    "freshness",
+    "match_interest",
+    "behavior_weight",
+    "user_behavior_count",
+    "user_recent_7d_count",
+    "item_ctr_like",
+    "item_ctr_collect",
+    "item_age_days_norm"
+  ],
+  "hidden_dims": [
+    128,
+    64,
+    32
+  ],
+  "dropout": 0.2,
+  "learning_rate": 0.001,
+  "epochs": 20,
+  "batch_size": 128,
+  "neg_ratio": 3,
+  "train_size": 985,
+  "valid_size": 247,
+  "best_valid_loss": 0.14869897067546844
+}

@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>内容管理</title>
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body>
+  <nav class="nav">
+    <a href="./index.html">首页</a>
+    <a href="./login.html">注册/登录</a>
+    <a href="./items.html">内容列表</a>
+    <a href="./recommend.html">猜你喜欢</a>
+    <a href="./stats.html">数据统计</a>
+  </nav>
+
+  <div class="container">
+    <div class="card">
+      <h2>新增内容</h2>
+      <input id="title" placeholder="标题" />
+      <input id="category" placeholder="分类" />
+      <input id="tags" placeholder="标签，逗号分隔" />
+      <textarea id="description" placeholder="描述"></textarea>
+      <button onclick="createItem()">创建内容</button>
+      <div id="createResult" class="small"></div>
+    </div>
+
+    <div class="card">
+      <h2>内容列表</h2>
+      <button onclick="loadItems()">刷新列表</button>
+      <div id="itemsWrap"></div>
+    </div>
+  </div>
+
+  <script src="./js/api.js"></script>
+  <script src="./js/main.js"></script>
+  <script>
+    async function createItem() {
+      const payload = {
+        title: document.getElementById('title').value,
+        category: document.getElementById('category').value || null,
+        tags: document.getElementById('tags').value || null,
+        description: document.getElementById('description').value || null,
+      };
+      try {
+        const data = await apiPost('/api/items', payload);
+        document.getElementById('createResult').innerText = `创建成功，内容ID: ${data.id}`;
+        loadItems();
+      } catch (e) {
+        document.getElementById('createResult').innerText = `创建失败: ${e.message}`;
+      }
+    }
+
+    async function loadItems() {
+      try {
+        const rows = await apiGet('/api/items?limit=100');
+        renderList('itemsWrap', rows, x => `
+          <div class="card">
+            <div><strong>${x.title}</strong> <span class="badge">${x.category || '未分类'}</span></div>
+            <div class="small">标签：${x.tags || '-'} | 热度：${x.popularity}</div>
+            <div>${x.description || ''}</div>
+            <div style="margin-top:8px;">
+              <a href="./detail.html?item_id=${x.id}">查看详情</a>
+            </div>
+          </div>
+        `);
+      } catch (e) {
+        document.getElementById('itemsWrap').innerHTML = `<div class="error">加载失败: ${e.message}</div>`;
+      }
+    }
+
+    loadItems();
+  </script>
+</body>
+</html>

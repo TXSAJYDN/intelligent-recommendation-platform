@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>智能内容推荐平台</title>
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body>
+  <nav class="nav">
+    <a href="./index.html">首页</a>
+    <a href="./login.html">注册/登录</a>
+    <a href="./items.html">内容列表</a>
+    <a href="./recommend.html">猜你喜欢</a>
+    <a href="./stats.html">数据统计</a>
+  </nav>
+
+  <div class="container">
+    <div class="card">
+      <h1>智能内容推荐平台</h1>
+      <p class="small">企业级推荐系统骨架：数据层 + 召回层 + 排序层 + 服务层</p>
+      <p>推荐 API 文档：<a href="http://127.0.0.1:8000/docs" target="_blank">http://127.0.0.1:8000/docs</a></p>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h3>平台亮点</h3>
+        <ul>
+          <li>多路召回（UserCF / ItemCF / Embedding / Faiss 占位）</li>
+          <li>排序模型（规则 + LR/GBDT/DNN 骨架）</li>
+          <li>冷启动推荐 + 热门榜单</li>
+          <li>A/B Test 分组策略</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>当前任务建议</h3>
+        <ol>
+          <li>先注册用户并新增内容</li>
+          <li>上报几条行为日志</li>
+          <li>到“猜你喜欢”页查看推荐结果</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

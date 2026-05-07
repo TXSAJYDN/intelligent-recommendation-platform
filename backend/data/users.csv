@@ -1,0 +1,16 @@
+username,password,age,gender,interests,group_name
+alice,123456,23,female,"数码,手机,电脑",A
+bob,123456,28,male,"运动,户外,鞋服",B
+charlie,123456,31,male,"财经,商业,科技",C
+diana,123456,26,female,"美妆,穿搭,家居",A
+eric,123456,24,male,"数码,游戏,科技",B
+fiona,123456,27,female,"美妆,护肤,穿搭",C
+george,123456,33,male,"运动,健身,户外",A
+helen,123456,29,female,"家居,设计,生活",B
+ivan,123456,35,male,"财经,科技,AI",C
+julia,123456,25,female,"美妆,家居,穿搭",A
+kevin,123456,22,male,"数码,手机,游戏",B
+lisa,123456,30,female,"运动,瑜伽,健身",C
+mike,123456,27,male,"科技,AI,编程",A
+nancy,123456,32,female,"家居,美食,生活",B
+oscar,123456,36,male,"财经,投资,商业",C

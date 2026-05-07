@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>内容详情</title>
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body>
+  <nav class="nav">
+    <a href="./index.html">首页</a>
+    <a href="./login.html">注册/登录</a>
+    <a href="./items.html">内容列表</a>
+    <a href="./recommend.html">猜你喜欢</a>
+    <a href="./stats.html">数据统计</a>
+  </nav>
+
+  <div class="container">
+    <div id="detailWrap" class="card"></div>
+
+    <div class="card">
+      <h3>上报行为</h3>
+      <input id="userId" placeholder="用户ID（先登录可自动填）" />
+      <select id="behaviorType">
+        <option value="view">view</option>
+        <option value="click">click</option>
+        <option value="like">like</option>
+        <option value="favorite">favorite</option>
+        <option value="rating">rating</option>
+      </select>
+      <input id="rating" placeholder="评分（可选）" />
+      <input id="duration" placeholder="停留时长（秒，可选）" />
+      <button onclick="submitBehavior()">提交行为</button>
+      <div id="behaviorResult" class="small"></div>
+    </div>
+
+    <div class="card">
+      <h3>相似内容</h3>
+      <div id="similarWrap"></div>
+    </div>
+  </div>
+
+  <script src="./js/api.js"></script>
+  <script src="./js/main.js"></script>
+  <script>
+    const query = new URLSearchParams(window.location.search);
+    const itemId = Number(query.get('item_id'));
+    const defaultUserId = localStorage.getItem('user_id') || '';
+    document.getElementById('userId').value = defaultUserId;
+
+    async function loadDetail() {
+      if (!itemId) {
+        document.getElementById('detailWrap').innerHTML = '<div class="error">缺少 item_id 参数</div>';
+        return;
+      }
+      try {
+        const item = await apiGet(`/api/items/${itemId}`);
+        document.getElementById('detailWrap').innerHTML = `
+          <h2>${item.title}</h2>
+          <div class="small">分类：${item.category || '-'} | 标签：${item.tags || '-'}</div>
+          <p>${item.description || ''}</p>
+          <div class="small">热度：${item.popularity}</div>
+        `;
+
+        const similar = await apiGet(`/api/items/${itemId}/similar`);
+        renderList('similarWrap', similar, x => `
+          <div class="card">
+            <div><strong>${x.title}</strong></div>
+            <div class="small">理由：${x.reason}</div>
+          </div>
+        `);
+      } catch (e) {
+        document.getElementById('detailWrap').innerHTML = `<div class="error">加载失败: ${e.message}</div>`;
+      }
+    }
+
+    async function submitBehavior() {
+      const payload = {
+        user_id: Number(document.getElementById('userId').value),
+        item_id: itemId,
+        behavior_type: document.getElementById('behaviorType').value,
+        rating: Number(document.getElementById('rating').value || 0) || null,
+        duration: Number(document.getElementById('duration').value || 0) || null,
+      };
+      try {
+        const data = await apiPost('/api/behaviors/realtime', payload);
+        document.getElementById('behaviorResult').innerText = `提交成功，行为ID: ${data.id}`;
+      } catch (e) {
+        document.getElementById('behaviorResult').innerText = `提交失败: ${e.message}`;
+      }
+    }
+
+    loadDetail();
+  </script>
+</body>
+</html>

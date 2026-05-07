@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>数据统计</title>
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body>
+  <nav class="nav">
+    <a href="./index.html">首页</a>
+    <a href="./login.html">注册/登录</a>
+    <a href="./items.html">内容列表</a>
+    <a href="./recommend.html">猜你喜欢</a>
+    <a href="./stats.html">数据统计</a>
+  </nav>
+
+  <div class="container">
+    <div class="grid">
+      <div class="card">
+        <h3>基础统计</h3>
+        <div id="baseStats"></div>
+      </div>
+      <div class="card">
+        <h3>A/B Test 分组</h3>
+        <div id="abStats"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>热门内容</h3>
+      <div id="popularStats"></div>
+    </div>
+
+    <div class="card">
+      <h3>推荐效果指标</h3>
+      <div id="recStats"></div>
+    </div>
+  </div>
+
+  <script src="./js/api.js"></script>
+  <script src="./js/charts.js"></script>
+  <script>
+    async function loadStats() {
+      try {
+        const [users, items, behaviors, ab, popular, rec] = await Promise.all([
+          apiGet('/api/stats/users'),
+          apiGet('/api/stats/items'),
+          apiGet('/api/stats/behaviors'),
+          apiGet('/api/stats/abtest'),
+          apiGet('/api/stats/popular'),
+          apiGet('/api/stats/recommendation'),
+        ]);
+
+        document.getElementById('baseStats').innerHTML = `
+          <div>用户数：<strong>${users.users}</strong></div>
+          <div>内容数：<strong>${items.items}</strong></div>
+          <div>行为数：<strong>${behaviors.behaviors}</strong></div>
+        `;
+
+        document.getElementById('abStats').innerHTML = (ab.groups || [])
+          .map(x => `<div>组 ${x.group}: <strong>${x.count}</strong></div>`)
+          .join('');
+
+        renderSimpleBar('popularStats', (popular || []).map(x => ({ label: x.title, value: x.popularity })));
+
+        document.getElementById('recStats').innerHTML = `
+          <div>CTR: ${rec.ctr}</div>
+          <div>Recall: ${rec.recall}</div>
+          <div>Precision: ${rec.precision}</div>
+          <div>Response Time: ${rec.response_time_ms} ms</div>
+          <div>Cache Hit Rate: ${rec.cache_hit_rate}</div>
+        `;
+      } catch (e) {
+        document.getElementById('baseStats').innerHTML = `<div class="error">加载失败: ${e.message}</div>`;
+      }
+    }
+
+    loadStats();
+  </script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>猜你喜欢</title>
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body>
+  <nav class="nav">
+    <a href="./index.html">首页</a>
+    <a href="./login.html">注册/登录</a>
+    <a href="./items.html">内容列表</a>
+    <a href="./recommend.html">猜你喜欢</a>
+    <a href="./stats.html">数据统计</a>
+  </nav>
+
+  <div class="container">
+    <div class="card">
+      <h2>猜你喜欢</h2>
+      <input id="userId" placeholder="用户ID" />
+      <select id="model">
+        <option value="hybrid">hybrid</option>
+        <option value="lr">lr</option>
+        <option value="gbdt">gbdt</option>
+        <option value="dnn">dnn</option>
+      </select>
+      <button onclick="loadRecommend()">获取推荐</button>
+      <button onclick="loadHot()" style="margin-left:8px;">查看热门</button>
+      <div id="recommendInfo" class="small"></div>
+    </div>
+
+    <div class="card">
+      <h3>推荐结果</h3>
+      <div id="recommendWrap"></div>
+    </div>
+  </div>
+
+  <script src="./js/api.js"></script>
+  <script src="./js/main.js"></script>
+  <script>
+    document.getElementById('userId').value = localStorage.getItem('user_id') || '';
+
+    async function loadRecommend() {
+      const userId = Number(document.getElementById('userId').value);
+      const model = document.getElementById('model').value;
+      if (!userId) {
+        document.getElementById('recommendInfo').innerText = '请先输入用户ID';
+        return;
+      }
+      try {
+        const data = await apiGet(`/api/recommend/ranking/${userId}?model=${model}`);
+        document.getElementById('recommendInfo').innerText = `策略: ${data.strategy}`;
+        renderList('recommendWrap', data.items, x => `
+          <div class="card">
+            <div><strong>${x.title}</strong></div>
+            <div class="small">score: ${x.score.toFixed(4)} | reason: ${x.reason || '-'}</div>
+          </div>
+        `);
+      } catch (e) {
+        document.getElementById('recommendInfo').innerText = `加载失败: ${e.message}`;
+      }
+    }
+
+    async function loadHot() {
+      try {
+        const data = await apiGet('/api/recommend/hot');
+        document.getElementById('recommendInfo').innerText = '策略: hot';
+        renderList('recommendWrap', data.items, x => `
+          <div class="card">
+            <div><strong>${x.title}</strong></div>
+            <div class="small">score: ${x.score} | reason: ${x.reason || '-'}</div>
+          </div>
+        `);
+      } catch (e) {
+        document.getElementById('recommendInfo').innerText = `加载失败: ${e.message}`;
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+__pycache__/
+*.py[cod]
+*$py.class
+*.log
+.env
+.venv/
+venv/
+ENV/
+
+# 数据库
+app.db
+*.sqlite3
+
+# 测试与缓存
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 项目特有临时文件
+tmp_reco_test_result.txt
+test_shq_*.py
+
+# 忽略大型预训练模型权重
+models/models--*
+
+# 排序模型权重（目前 50KB 可保留，若变大可开启此忽略）
+# models/ranking/dnn/*.pt

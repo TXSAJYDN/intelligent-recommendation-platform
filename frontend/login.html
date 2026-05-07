@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>用户注册登录</title>
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body>
+  <nav class="nav">
+    <a href="./index.html">首页</a>
+    <a href="./login.html">注册/登录</a>
+    <a href="./items.html">内容列表</a>
+    <a href="./recommend.html">猜你喜欢</a>
+    <a href="./stats.html">数据统计</a>
+  </nav>
+
+  <div class="container grid">
+    <div class="card">
+      <h2>用户注册</h2>
+      <input id="regUsername" placeholder="用户名" />
+      <input id="regPassword" type="password" placeholder="密码" />
+      <input id="regAge" placeholder="年龄" />
+      <input id="regGender" placeholder="性别" />
+      <input id="regInterests" placeholder="兴趣标签，逗号分隔" />
+      <button onclick="registerUser()">注册</button>
+      <div id="regResult" class="small"></div>
+    </div>
+
+    <div class="card">
+      <h2>用户登录</h2>
+      <input id="loginUsername" placeholder="用户名" />
+      <input id="loginPassword" type="password" placeholder="密码" />
+      <button onclick="loginUser()">登录</button>
+      <div id="loginResult" class="small"></div>
+    </div>
+  </div>
+
+  <script src="./js/api.js"></script>
+  <script>
+    async function registerUser() {
+      const payload = {
+        username: document.getElementById('regUsername').value,
+        password: document.getElementById('regPassword').value,
+        age: Number(document.getElementById('regAge').value || 0) || null,
+        gender: document.getElementById('regGender').value || null,
+        interests: document.getElementById('regInterests').value || null,
+      };
+      try {
+        const data = await apiPost('/api/register', payload);
+        document.getElementById('regResult').innerText = `注册成功，用户ID: ${data.id}`;
+      } catch (e) {
+        document.getElementById('regResult').innerText = `注册失败: ${e.message}`;
+      }
+    }
+
+    async function loginUser() {
+      const payload = {
+        username: document.getElementById('loginUsername').value,
+        password: document.getElementById('loginPassword').value,
+      };
+      try {
+        const data = await apiPost('/api/login', payload);
+        document.getElementById('loginResult').innerText = `登录成功，用户ID: ${data.id}，实验组: ${data.group_name}`;
+        localStorage.setItem('user_id', String(data.id));
+      } catch (e) {
+        document.getElementById('loginResult').innerText = `登录失败: ${e.message}`;
+      }
+    }
+  </script>
+</body>
+</html>
